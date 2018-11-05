@@ -57,7 +57,7 @@ Parse.Cloud.define('saleCreate', (request, response) => {
                     sale
                       .save(null, { useMasterKey: true })
                       .then((newSale) => {
-                        response.success(newSale);
+                        response.success(newSale.toJSON());
                       })
                       .catch((err) => {
                         response.error(err.code, err.message);
@@ -142,7 +142,7 @@ Parse.Cloud.define('saleUpdate', (request, response) => {
         saleToBeUpdated
           .save(null, { useMasterKey: true })
           .then((saleUpdated) => {
-            response.success(saleUpdated);
+            response.success(saleUpdated.toJSON());
           })
           .catch((err) => {
             response.error(err.code, err.message);
@@ -173,7 +173,7 @@ Parse.Cloud.define('saleGet', (request, response) => {
     .first({ useMasterKey: true })
     .then((sale) => {
       if (sale != undefined) {
-        response.success(sale);
+        response.success(sale.toJSON());
       } else {
         response.error(404, `Sale was not found for ${saleObjectId}`);
       }
@@ -208,7 +208,8 @@ Parse.Cloud.define('saleGetByFilter', (request, response) => {
     .find({ useMasterKey: true })
     .then((sales) => {
       if (sales.length > 0) {
-        response.success(sales);
+        const salesJSON = sales.map((sale) => sale.toJSON());
+        response.success(salesJSON);
       } else {
         response.error(
           404,
@@ -240,7 +241,8 @@ Parse.Cloud.define('saleGetByLocationRadius', (request, response) => {
     .find({ useMasterKey: true })
     .then((sales) => {
       if (sales.length > 0) {
-        response.success(sales);
+        const salesJSON = sales.map((sale) => sale.toJSON());
+        response.success(salesJSON);
       } else {
         response.error(
           404,

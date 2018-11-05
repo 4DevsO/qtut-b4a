@@ -22,7 +22,7 @@ Parse.Cloud.define('userSignUp', (request, response) => {
   user
     .signUp(null)
     .then((user) => {
-      response.success(user);
+      response.success(user.toJSON());
     })
     .catch((err) => {
       response.error(err.code, err.message);
@@ -41,7 +41,7 @@ Parse.Cloud.define('userSignIn', (request, response) => {
 
   Parse.User.logIn(username, password)
     .then((user) => {
-      response.success(user);
+      response.success(user.toJSON());
     })
     .catch((err) => {
       response.error(err.code, err.message);
@@ -68,7 +68,7 @@ Parse.Cloud.define('userUpdate', (request, response) => {
         userToBeUpdated
           .save(null, { useMasterKey: true })
           .then((result) => {
-            response.success(result);
+            response.success(result.toJSON());
           })
           .catch((err) => {
             response.error(err.code, err.message);
@@ -95,7 +95,7 @@ Parse.Cloud.define('userGet', (request, response) => {
     .first({ useMasterKey: true })
     .then((user) => {
       if (user != undefined) {
-        response.success(user);
+        response.success(user.toJSON());
       } else {
         response.error(404, `User not found for ${userObjectId}`);
       }
@@ -193,7 +193,8 @@ Parse.Cloud.define('userGetByFilter', (request, response) => {
     .find({ useMasterKey: true })
     .then((users) => {
       if (users.length > 0) {
-        response.success(users);
+        const usersJSON = users.map((user) => user.toJSON());
+        response.success(usersJSON);
       } else {
         response.error(
           404,

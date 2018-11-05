@@ -36,7 +36,7 @@ Parse.Cloud.define('productCreate', (request, response) => {
         product
           .save(null, { useMasterKey: true })
           .then((newProduct) => {
-            response.success(newProduct);
+            response.success(newProduct.toJSON());
           })
           .catch((err) => {
             response.error(err.code, err.message);
@@ -70,7 +70,7 @@ Parse.Cloud.define('productUpdate', (request, response) => {
         productToBeUpdated
           .save(null, { useMasterKey: true })
           .then((productUpdated) => {
-            response.success(productUpdated);
+            response.success(productUpdated.toJSON());
           })
           .catch((err) => {
             response.error(err.code, err.message);
@@ -129,7 +129,7 @@ Parse.Cloud.define('productGet', (request, response) => {
     .first({ useMasterKey: true })
     .then((product) => {
       if (product != undefined) {
-        response.success(product);
+        response.success(product.toJSON());
       } else {
         response.error(404, `Product was not found for ${productObjectId}`);
       }
@@ -161,6 +161,7 @@ Parse.Cloud.define('productGetByFilter', (request, response) => {
     .find({ useMasterKey: true })
     .then((products) => {
       if (products.length > 0) {
+        const productsJSON = products.map((product) => product.toJSON());
         response.success(products);
       } else {
         response.error(
