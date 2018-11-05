@@ -166,6 +166,9 @@ Parse.Cloud.define('saleGet', (request, response) => {
 
   const saleQuery = new Parse.Query(Sale);
   saleQuery.equalTo('objectId', saleObjectId);
+  saleQuery.include('products');
+  saleQuery.include('mainProduct');
+  saleQuery.include('user');
   saleQuery
     .first({ useMasterKey: true })
     .then((sale) => {
@@ -189,6 +192,9 @@ Parse.Cloud.define('saleGetByFilter', (request, response) => {
   const filter = request.params.filter;
 
   const saleQuery = new Parse.Query(Sale);
+  saleQuery.include('products');
+  saleQuery.include('mainProduct');
+  saleQuery.include('user');
   Object.keys(filter).forEach((field) => {
     if (typeof filter[field] == typeof 'string') {
       saleQuery.contains(field, filter[field]);
@@ -226,6 +232,9 @@ Parse.Cloud.define('saleGetByLocationRadius', (request, response) => {
   const radius = request.params.radius;
 
   const saleQuery = new Parse.Query(Sale);
+  saleQuery.include('products');
+  saleQuery.include('mainProduct');
+  saleQuery.include('user');
   saleQuery.withinKilometers('location', location, radius, true);
   saleQuery
     .find({ useMasterKey: true })
