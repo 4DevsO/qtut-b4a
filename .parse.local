@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Qtut": {
+      "applicationId": "9vthqGNsauv7bEFUlUKPfmpoxbnPFm0owuFe8cIu"
+    },
+    "_default": {
+      "link": "Qtut"
+    }
+  }
+}
