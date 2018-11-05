@@ -170,3 +170,38 @@ Parse.Cloud.define('userSetAcls', (request, response) => {
       response.error('Got an error ' + error.code + ' : ' + error.description);
     });
 });
+
+/**
+ * @name userGetByFilter
+ * @description get users by filter
+ * @param {filter{...string : any}} filter
+ */
+Parse.Cloud.define('userGetByFilter', (request, response) => {
+  const filter = request.params.filter;
+
+  const userQuery = new Parse.Query(Parse.User);
+  Object.keys(filter).forEach((field) => {
+    if (typeof filter[field] == typeof 'string') {
+      userQuery.contains(field, filter[field]);
+    } else if (typeof filter[field] == typeof []) {
+      userQuery.containedIn(field, filter[field]);
+    } else {
+      userQuery.equalTo(field, filter[field]);
+    }
+  });
+  userQuery
+    .find({ useMasterKey: true })
+    .then((users) => {
+      if (users.length > 0) {
+        response.success(users);
+      } else {
+        response.error(
+          404,
+          `No users were found for the filter ${JSON.stringify(filter)}`
+        );
+      }
+    })
+    .catch((err) => {
+      response.error(err.code, err.message);
+    });
+});
