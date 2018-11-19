@@ -190,11 +190,23 @@ Parse.Cloud.define('saleGet', (request, response) => {
  */
 Parse.Cloud.define('saleGetByFilter', (request, response) => {
   const filter = request.params.filter;
-
+  const location = filter['location'];
   const saleQuery = new Parse.Query(Sale);
   saleQuery.include('products');
   saleQuery.include('mainProduct');
   saleQuery.include('user');
+  if (location) {
+    if (location.location && location.radius) {
+      saleQuery.withinKilometers(
+        'location',
+        location.location,
+        location.radius
+      );
+      delete filter['location'];
+    } else {
+      response.error(400, 'Object location must have location and radius');
+    }
+  }
   Object.keys(filter).forEach((field) => {
     if (typeof filter[field] == typeof 'string') {
       saleQuery.contains(field, filter[field]);
