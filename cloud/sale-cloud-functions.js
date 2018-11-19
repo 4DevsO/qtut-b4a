@@ -220,7 +220,20 @@ Parse.Cloud.define('saleGetByFilter', (request, response) => {
     .find({ useMasterKey: true })
     .then((sales) => {
       if (sales.length > 0) {
-        const salesJSON = sales.map((sale) => sale.toJSON());
+        const salesJSON = sales.map((sale) => {
+          const productsJSON = sale
+            .get('products')
+            .map((product) => product.toJSON());
+          const mainProductJSON = sale.get('mainProduct').toJSON();
+          const userJSON = sale.get('user').toJSON();
+          const newSale = {
+            ...sale.toJSON(),
+            mainProduct: mainProductJSON,
+            user: userJSON,
+            products: productsJSON
+          };
+          return newSale;
+        });
         response.success(salesJSON);
       } else {
         response.error(
